@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wi-Fi Password Scanner</title>
+<style>
+  body, html { margin: 0; padding: 0; background: black; overflow: hidden; }
+  video { width: 100vw; height: 100vh; object-fit: cover; }
+  #note {
+    position: fixed; bottom: 20px; width: 100%; text-align: center;
+    color: white; font-family: sans-serif; font-size: 1.2rem; opacity: 0.7;
+  }
+</style>
+</head>
+<body>
+<video id="cam" autoplay playsinline></video>
+<div id="note">…looking for Wi-Fi network…</div>
+<script>
+navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+  .then(stream => cam.srcObject = stream)
+  .catch(() => document.body.innerHTML = "<h1 style='color:white;text-align:center;margin-top:40vh;'>Camera permission needed</h1>");
+</script>
+</body>
+</html>
