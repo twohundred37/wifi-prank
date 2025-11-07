@@ -1,24 +1,86 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wi-Fi Password Scanner</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Initializing Secure Link...</title>
 <style>
-  body, html { margin: 0; padding: 0; background: black; overflow: hidden; }
-  video { width: 100vw; height: 100vh; object-fit: cover; }
-  #note {
-    position: fixed; bottom: 20px; width: 100%; text-align: center;
-    color: white; font-family: sans-serif; font-size: 1.2rem; opacity: 0.7;
-  }
+  :root{--bg:#020202;--green:#3ce06b;--muted:#9aa3a1}
+  html,body{height:100%;margin:0;font-family:Menlo,Monaco,Consolas,monospace;background:linear-gradient(180deg,#000 0%, #020202 100%);color:var(--green)}
+  .wrap{padding:24px;box-sizing:border-box;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
+  .term{width:100%;max-width:900px;background:rgba(0,0,0,0.45);border:1px solid rgba(60,60,60,0.3);padding:20px;border-radius:6px;box-shadow:0 10px 30px rgba(0,0,0,.6)}
+  .line{white-space:pre-wrap;line-height:1.5;font-size:18px}
+  .prompt{color:var(--muted)}
+  .barWrap{margin-top:14px;background:#0b0b0b;padding:6px;border-radius:6px}
+  .bar{height:12px;border-radius:4px;background:linear-gradient(90deg,var(--green),#46b36b);width:0%}
+  .big{font-size:48px;letter-spacing:2px;margin-top:28px}
+  .glow{color:#fff;text-shadow:0 0 20px rgba(60,255,120,0.08)}
+  .center{display:flex;align-items:center;justify-content:center;flex-direction:column}
+  .sub{color:var(--muted);font-size:14px;margin-top:18px}
 </style>
 </head>
 <body>
-<video id="cam" autoplay playsinline></video>
-<div id="note">…looking for Wi-Fi network…</div>
+<div class="wrap">
+  <div class="term" id="term">
+    <div class="line prompt">> CONNECTING TO 237-SERVER...</div>
+    <div class="line" id="typed"></div>
+    <div class="barWrap"><div class="bar" id="bar"></div></div>
+    <div class="line" style="margin-top:10px" id="status"></div>
+  </div>
+  <div class="center" style="width:100%;max-width:900px">
+    <div id="blast" class="big glow" style="display:none">BREACH COMPLETE — ACCESS GRANTED</div>
+    <div class="sub" id="sub" style="display:none">Redirecting to secure view...</div>
+  </div>
+</div>
+
 <script>
-navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
-  .then(stream => cam.srcObject = stream)
-  .catch(() => document.body.innerHTML = "<h1 style='color:white;text-align:center;margin-top:40vh;'>Camera permission needed</h1>");
+const steps = [
+  "Resolving host: twohundred37.github.io",
+  "TLS handshake... [ OK ]",
+  "Authenticating as: anonymous_user",
+  "Enumerating open ports: 22,80,443,8080",
+  "Pipelining exploit modules...",
+  "Injecting payload: █████████████▒▒▒▒▒▒ 37%",
+  "Privilege escalation... [ OK ]",
+  "Dumping wifi-credentials.db -> /tmp/creds.db",
+  "Packaging proof-of-access",
+  "Finalizing..."
+];
+
+let i=0, el = document.getElementById('typed'), bar=document.getElementById('bar'), stat=document.getElementById('status');
+
+function typeLine(txt, cb){
+  let p='', idx=0;
+  const t = setInterval(()=> {
+    p += txt[idx++] || '';
+    el.textContent = p;
+    if(idx>txt.length){ clearInterval(t); setTimeout(cb, 520); }
+  }, 28);
+}
+
+function step(){
+  if(i>=steps.length) return finish();
+  let text = "> " + steps[i++];
+  typeLine(text, ()=>{
+    let pct = Math.min(100, Math.floor((i/steps.length)*100));
+    bar.style.width = pct + "%";
+    stat.textContent = "Progress: " + pct + "%";
+    setTimeout(step, 350 + Math.random()*400);
+  });
+}
+
+function finish(){
+  stat.textContent = "Process complete. Verifying...";
+  bar.style.width = "100%";
+  setTimeout(()=> {
+    document.getElementById('term').style.display='none';
+    document.getElementById('blast').style.display='block';
+    document.getElementById('sub').style.display='block';
+    // pause then redirect to selfie (or reveal) - change to your reveal url
+    setTimeout(()=> location.href = "https://twohundred37.github.io/wifi-prank/reveal.html", 1200);
+  }, 800);
+}
+
+step();
 </script>
 </body>
 </html>
